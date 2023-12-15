@@ -1,0 +1,3 @@
+/Users/virwin/work/code/tinyapplauncher/third_party/agil/agil4xplatform/third-party-ndk/glog/CMakeFiles/rebuild_cache.dir
+/Users/virwin/work/code/tinyapplauncher/third_party/agil/agil4xplatform/third-party-ndk/glog/CMakeFiles/edit_cache.dir
+/Users/virwin/work/code/tinyapplauncher/third_party/agil/agil4xplatform/third-party-ndk/glog/CMakeFiles/glog.dir

@@ -1,0 +1,8 @@
+nodejs/agil
+nodejs/build
+nodejs/bundle
+nodejs/node_modules
+nodejs/package-lock.json
+cmake-build-debug
+.vscode
+.idea
