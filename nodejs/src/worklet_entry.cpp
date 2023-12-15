@@ -17,11 +17,12 @@ using v8::Value;
 #include "V8RuntimeConfig.h"
 #include "CallInvoker.h"
 
+static rnv8::V8Runtime *jsRuntime = nullptr;
+
 void Init(const FunctionCallbackInfo<Value> &args) {
     rnv8::V8Runtime::nodejsV8Isolate = args.GetIsolate();
     auto config = std::make_unique<rnv8::V8RuntimeConfig>();
-    auto jsRuntime = new rnv8::V8Runtime(std::move(config));
-//    jsRuntime->evaluateJavaScript()
+    jsRuntime = new rnv8::V8Runtime(std::move(config));
     auto callInvoker = std::make_shared<reanimated::CallInvoker>();
     auto module = new reanimated::ReanimatedModule(callInvoker, jsRuntime);
     module->installTurboModule();
@@ -32,9 +33,21 @@ void Destroy(const FunctionCallbackInfo<Value> &args) {
     rnv8::V8Runtime::nodejsV8Isolate = nullptr;
 }
 
+void Eval(const FunctionCallbackInfo<Value> &args) {
+    auto isolate = args.GetIsolate();
+    v8::String::Utf8Value value(isolate, args[0]);
+    auto codeStr = std::string(*value, value.length());
+    v8::String::Utf8Value urlValue(isolate, args[1]);
+    auto urlStr = std::string(*urlValue, urlValue.length());
+
+    auto buffer = std::make_shared<facebook::jsi::StringBuffer>(codeStr);
+    jsRuntime->evaluateJavaScript(buffer, urlStr);
+}
+
 void Initialize(Local<Object> exports) {
     NODE_SET_METHOD(exports, "init", Init);
     NODE_SET_METHOD(exports, "destroy", Destroy);
+    NODE_SET_METHOD(exports, "eval", Eval);
 }
 
 
