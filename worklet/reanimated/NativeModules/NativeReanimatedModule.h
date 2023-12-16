@@ -131,6 +131,10 @@ public:
 
     void setPropsRegistry(std::shared_ptr<PropsRegistry> propsRegistry);
 
+    jsi::Value get(facebook::jsi::Runtime &, const facebook::jsi::PropNameID &name) override;
+
+
+
 private:
     bool isThereAnyLayoutProp(jsi::Runtime &rt, const jsi::Object &props);
 

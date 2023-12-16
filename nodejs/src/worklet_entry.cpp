@@ -39,15 +39,19 @@ void Eval(const FunctionCallbackInfo<Value> &args) {
     auto codeStr = std::string(*value, value.length());
     v8::String::Utf8Value urlValue(isolate, args[1]);
     auto urlStr = std::string(*urlValue, urlValue.length());
-
     auto buffer = std::make_shared<facebook::jsi::StringBuffer>(codeStr);
     jsRuntime->evaluateJavaScript(buffer, urlStr);
+}
+
+void runUIThread(const FunctionCallbackInfo<Value> &args) {
+
 }
 
 void Initialize(Local<Object> exports) {
     NODE_SET_METHOD(exports, "init", Init);
     NODE_SET_METHOD(exports, "destroy", Destroy);
     NODE_SET_METHOD(exports, "eval", Eval);
+    NODE_SET_METHOD(exports, "runUIThread", runUIThread);
 }
 
 

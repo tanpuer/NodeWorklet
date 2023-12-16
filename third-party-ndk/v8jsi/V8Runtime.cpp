@@ -219,7 +219,7 @@ const {
             v8::String::Utf8Value stackTrace(isolate, stackTraceString);
             ss << JSIV8ValueConverter::ToSTLString(stackTrace) << std::endl;
         }
-
+        printf(ss.str().c_str());
         throw jsi::JSError(const_cast<V8Runtime &>(*this), ss.str());
         return;
     }

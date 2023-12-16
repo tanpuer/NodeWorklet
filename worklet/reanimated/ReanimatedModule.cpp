@@ -52,7 +52,7 @@ static void HandleLock(uv_async_t *handle) {
 }
 
 ReanimatedModule::ReanimatedModule(std::shared_ptr<CallInvoker> callInvoker, rnv8::V8Runtime *jsRuntime) {
-    this->callInvoker = std::shared_ptr<CallInvoker>(callInvoker);
+    this->callInvoker = std::shared_ptr<CallInvoker>(std::move(callInvoker));
     this->jsRuntime = jsRuntime;
 #ifdef __AGIL_YUNOS__
     async_lock = YUNOS_NEW(uv_async_t);
