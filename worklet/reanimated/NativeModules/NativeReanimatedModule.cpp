@@ -554,114 +554,109 @@ void NativeReanimatedModule::setPropsRegistry(
 }
 
 jsi::Value NativeReanimatedModule::get(jsi::Runtime &runtime, const jsi::PropNameID &name) {
-    static auto installCoreFunctions = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "installCoreFunctions"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                this->installCoreFunctions(rt, std::move(args[0]), std::move(args[1]));
-                return jsi::Value::undefined();
-            }));
-    static auto makeShareableClone = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "makeShareableClone"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                return this->makeShareableClone(rt, std::move(args[0]), std::move(args[1]));
-            }));
-    static auto makeSynchronizedDataHolder = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "makeSynchronizedDataHolder"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                return this->makeSynchronizedDataHolder(rt, std::move(args[0]));
-            }));
-    static auto getDataSynchronously = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "getDataSynchronously"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                return this->getDataSynchronously(rt, std::move(args[0]));
-            }));
-    static auto scheduleOnUI = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "scheduleOnUI"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                this->scheduleOnUI(rt, std::move(args[0]));
-                return jsi::Value::undefined();
-            }));
-    static auto registerEventHandler = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "registerEventHandler"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                return this->registerEventHandler(rt, std::move(args[0]), std::move(args[1]));
-            }));
-    static auto unregisterEventHandler = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "unregisterEventHandler"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                this->unregisterEventHandler(rt, std::move(args[0]));
-                return jsi::Value::undefined();
-            }));
-    static auto getViewProp = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "getViewProp"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                return this->getViewProp(rt, std::move(args[0]), std::move(args[1]), std::move(args[2]));
-            }));
-    static auto configureProps = jsi::Function::createFromHostFunction(
-            runtime,
-            jsi::PropNameID::forAscii(runtime, "configureProps"),
-            0,
-            jsi::HostFunctionType([this](jsi::Runtime &rt,
-                                         const jsi::Value &thisVal,
-                                         const jsi::Value *args,
-                                         size_t count) -> jsi::Value {
-                return this->configureProps(rt, std::move(args[0]), std::move(args[1]));
-            }));
-    static std::map<std::string, jsi::Function &> sMethodMap = {
-            {"installCoreFunctions",       installCoreFunctions},
-            {"makeShareableClone",         makeShareableClone},
-            {"makeSynchronizedDataHolder", makeSynchronizedDataHolder},
-            {"getDataSynchronously",       getDataSynchronously},
-            {"scheduleOnUI",               scheduleOnUI},
-            {"registerEventHandler",       registerEventHandler},
-            {"unregisterEventHandler",     unregisterEventHandler},
-            {"getViewProp",                getViewProp},
-            {"configureProps",             configureProps},
-    };
     auto methodName = name.utf8(runtime);
-    auto eventsFind = sMethodMap.find(methodName);
-    if (eventsFind != sMethodMap.end()) {
-        return jsi::Function(std::move(eventsFind->second));
+    if (methodName == "installCoreFunctions") {
+        return jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "installCoreFunctions"),
+                2,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    this->installCoreFunctions(rt, std::move(args[0]), std::move(args[1]));
+                    return jsi::Value::undefined();
+                }));
+    } else if (methodName == "makeShareableClone") {
+        return jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "makeShareableClone"),
+                2,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    return this->makeShareableClone(rt, std::move(args[0]), std::move(args[1]));
+                }));
+    } else if (methodName == "scheduleOnUI") {
+        return jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "scheduleOnUI"),
+                1,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    this->scheduleOnUI(rt, std::move(args[0]));
+                    return jsi::Value::undefined();
+                }));
+    } else if (methodName == "registerEventHandler") {
+        jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "registerEventHandler"),
+                2,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    return this->registerEventHandler(rt, std::move(args[0]), std::move(args[1]));
+                }));
+    } else if (methodName == "getViewProp") {
+        jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "getViewProp"),
+                3,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    return this->getViewProp(rt, std::move(args[0]), std::move(args[1]), std::move(args[2]));
+                }));
+    } else if (methodName == "makeSynchronizedDataHolder") {
+        return jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "makeSynchronizedDataHolder"),
+                1,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    return this->makeSynchronizedDataHolder(rt, std::move(args[0]));
+                }));
+    } else if (methodName == "getDataSynchronously") {
+        return jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "getDataSynchronously"),
+                1,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    return this->getDataSynchronously(rt, std::move(args[0]));
+                }));
+    } else if (methodName == "unregisterEventHandler") {
+        return jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "unregisterEventHandler"),
+                1,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    this->unregisterEventHandler(rt, std::move(args[0]));
+                    return jsi::Value::undefined();
+                }));
+    } else if (methodName == "configureProps") {
+        jsi::Function::createFromHostFunction(
+                runtime,
+                jsi::PropNameID::forAscii(runtime, "configureProps"),
+                2,
+                jsi::HostFunctionType([this](jsi::Runtime &rt,
+                                             const jsi::Value &thisVal,
+                                             const jsi::Value *args,
+                                             size_t count) -> jsi::Value {
+                    return this->configureProps(rt, std::move(args[0]), std::move(args[1]));
+                }));
     }
     return jsi::Value::undefined();
 }

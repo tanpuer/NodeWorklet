@@ -122,7 +122,7 @@ void ReanimatedModule::installTurboModule() {
         return std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count();
     };
     holder->maybeFlushUIUpdatesQueueFunction = [&]() {
-        NS_LOGD("ReanimatedModule maybeFlushUIUpdatesQueueFunction");
+        NS_LOGD("ReanimatedModule maybeFlushUIUpdatesQueueFunction\n");
         reanimatedModule->performOperations();
     };
     holder->synchronouslyUpdateUIPropsFunction = [](jsi::Runtime &rt, uint32_t tag, const jsi::Object &props) {};

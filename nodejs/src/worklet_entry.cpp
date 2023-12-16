@@ -16,6 +16,7 @@ using v8::Value;
 #include "ReanimatedModule.h"
 #include "V8RuntimeConfig.h"
 #include "CallInvoker.h"
+#include "../ui_thread.h"
 
 static rnv8::V8Runtime *jsRuntime = nullptr;
 
@@ -26,6 +27,9 @@ void Init(const FunctionCallbackInfo<Value> &args) {
     auto callInvoker = std::make_shared<reanimated::CallInvoker>();
     auto module = new reanimated::ReanimatedModule(callInvoker, jsRuntime);
     module->installTurboModule();
+
+   GetHeronSDKManager();
+
     args.GetReturnValue().Set(1);
 }
 

@@ -6,12 +6,12 @@ static std::mutex sMutex;
 static std::vector<std::function<void()>> sFuncVector;
 
 static void HandleLock(uv_async_t *handle) {
-    NS_LOGD("HandleLock start");
+    NS_LOGD("HandleLock start\n");
     std::lock_guard<std::mutex> lockGuard(sMutex);
     for (const auto &item: sFuncVector) {
         item();
     }
-    NS_LOGD("HandleLock finish function");
+    NS_LOGD("HandleLock finish function\n");
 }
 
 reanimated::CallInvoker::CallInvoker() {
