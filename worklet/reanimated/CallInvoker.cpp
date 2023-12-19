@@ -11,6 +11,7 @@ static void HandleLock(uv_async_t *handle) {
     for (const auto &item: sFuncVector) {
         item();
     }
+    sFuncVector.clear();
     NS_LOGD("HandleLock finish function\n");
 }
 
