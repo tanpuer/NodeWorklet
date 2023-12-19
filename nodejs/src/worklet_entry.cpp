@@ -13,7 +13,7 @@ using v8::Value;
 
 #include "memory"
 #include "V8Runtime.h"
-#include "ReanimatedModule.h"
+#include "ReanimatedNodejs.h"
 #include "V8RuntimeConfig.h"
 #include "CallInvoker.h"
 #include "../ui_thread.h"
@@ -25,7 +25,7 @@ void Init(const FunctionCallbackInfo<Value> &args) {
     auto config = std::make_unique<rnv8::V8RuntimeConfig>();
     jsRuntime = new rnv8::V8Runtime(std::move(config));
     auto callInvoker = std::make_shared<reanimated::CallInvoker>();
-    auto module = new reanimated::ReanimatedModule(callInvoker, jsRuntime);
+    auto module = new reanimated::ReanimatedNodejs(callInvoker, jsRuntime);
     module->installTurboModule();
 
    GetHeronSDKManager();

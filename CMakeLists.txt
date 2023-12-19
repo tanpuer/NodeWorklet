@@ -73,6 +73,7 @@ set(WORKLET_SOURCES
         worklet/reanimated/AgilUIScheduler.cpp
         worklet/reanimated/CallInvoker.cpp
         worklet/reanimated/ReanimatedModule.cpp
+        worklet/reanimated/ReanimatedNodejs.cpp
 )
 
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
