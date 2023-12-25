@@ -27,8 +27,6 @@
                   "<(module_root_dir)/agil/libnodeworklet.a",
               ],
               "include_dirs": [
-                #homebrew
-                "/opt/homebrew/opt/sdl2/include",
 
                 #third_party
                 "/usr/local/include",
