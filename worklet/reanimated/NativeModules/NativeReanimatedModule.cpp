@@ -446,12 +446,9 @@ void NativeReanimatedModule::updateProps(
     size_t length = array.size(rt);
     for (size_t i = 0; i < length; ++i) {
         auto item = array.getValueAtIndex(rt, i).asObject(rt);
-        auto shadowNodeWrapper = item.getProperty(rt, "shadowNodeWrapper");
-        //Todo Caf3
-//        auto shadowNode = item.getProperty(rt, "tag").asNumber();
-//        const jsi::Value &updates = item.getProperty(rt, "updates");
-//        operationsInBatch_.emplace_back(shadowNode, std::make_unique<jsi::Value>(rt, updates));
-
+        auto shadowNode = item.getProperty(rt, "tag").asNumber();
+        const jsi::Value &updates = item.getProperty(rt, "updates");
+        operationsInBatch_.emplace_back(shadowNode, std::make_unique<jsi::Value>(rt, updates));
     }
 }
 
