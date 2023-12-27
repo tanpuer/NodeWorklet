@@ -591,7 +591,7 @@ jsi::Value NativeReanimatedModule::get(jsi::Runtime &runtime, const jsi::PropNam
                     return jsi::Value::undefined();
                 }));
     } else if (methodName == "registerEventHandler") {
-        jsi::Function::createFromHostFunction(
+        return jsi::Function::createFromHostFunction(
                 runtime,
                 jsi::PropNameID::forAscii(runtime, "registerEventHandler"),
                 2,
@@ -602,7 +602,7 @@ jsi::Value NativeReanimatedModule::get(jsi::Runtime &runtime, const jsi::PropNam
                     return this->registerEventHandler(rt, std::move(args[0]), std::move(args[1]));
                 }));
     } else if (methodName == "getViewProp") {
-        jsi::Function::createFromHostFunction(
+        return jsi::Function::createFromHostFunction(
                 runtime,
                 jsi::PropNameID::forAscii(runtime, "getViewProp"),
                 3,
@@ -647,7 +647,7 @@ jsi::Value NativeReanimatedModule::get(jsi::Runtime &runtime, const jsi::PropNam
                     return jsi::Value::undefined();
                 }));
     } else if (methodName == "configureProps") {
-        jsi::Function::createFromHostFunction(
+        return jsi::Function::createFromHostFunction(
                 runtime,
                 jsi::PropNameID::forAscii(runtime, "configureProps"),
                 2,
