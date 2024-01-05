@@ -4,9 +4,7 @@
 #include <memory>
 #include <thread>
 #include <unordered_map>
-
 #include "../Fabric/PropsRegistry.h"
-
 #include "../Registries/EventHandlerRegistry.h"
 #include "../Tools/ReanimatedHiddenHeaders.h"
 #include "../Tools/RuntimeDecorator.h"
@@ -14,10 +12,11 @@
 #include "../Tools/WorkletEventHandler.h"
 
 #ifdef DEBUG
-
 #include "../Tools/JSLogger.h"
-
 #endif
+
+//#include "heronsdk.h"
+//#include "page/dompageparam.h"
 
 namespace reanimated {
 
@@ -446,9 +445,10 @@ void NativeReanimatedModule::updateProps(
     size_t length = array.size(rt);
     for (size_t i = 0; i < length; ++i) {
         auto item = array.getValueAtIndex(rt, i).asObject(rt);
-        auto shadowNode = item.getProperty(rt, "tag").asNumber();
+        auto pageId = item.getProperty(rt, "pageId").asString(rt).utf8(rt);
+        auto tag = item.getProperty(rt, "tag").asNumber();
         const jsi::Value &updates = item.getProperty(rt, "updates");
-        operationsInBatch_.emplace_back(shadowNode, std::make_unique<jsi::Value>(rt, updates));
+        operationsInBatch_.emplace_back(pageId, tag, std::make_unique<jsi::Value>(rt, updates));
     }
 }
 
@@ -457,47 +457,24 @@ void NativeReanimatedModule::performOperations() {
         // nothing to do
         return;
     }
-
-    auto copiedOperationsQueue = std::move(operationsInBatch_);
-    operationsInBatch_ = std::vector<std::pair<uint32_t, std::unique_ptr<jsi::Value>>>();
-
-    jsi::Runtime &rt = *runtimeManager_->runtime;
-
-    bool hasLayoutUpdates = false;
-    for (const auto &[shadowNode, props]: copiedOperationsQueue) {
-        if (isThereAnyLayoutProp(rt, props->asObject(rt))) {
-            hasLayoutUpdates = true;
-            break;
-        }
-    }
-
-    //Todo Caf3
-//    if (!hasLayoutUpdates) {
-//        // If there's no layout props to be updated, we can apply the updates
-//        // directly onto the components and skip the commit.
-//        for (const auto &[shadowNode, props]: copiedOperationsQueue) {
-//            Tag tag = shadowNode->getTag();
-//            synchronouslyUpdateUIPropsFunction(rt, tag, props->asObject(rt));
-//            auto rawProps = new RawProps(rt, *props);
-//            auto clonedNode = uiManager_->cloneNode(*shadowNode, nullptr, rawProps);
-//            delete rawProps;
-//        }
-//        if (copiedOperationsQueue.empty() || surfaceId_ < 0) {
-//            return;
-//        }
-//        uiManager_->getDelegate()->uiManagerCompleteSurface(surfaceId_, std::make_shared<ShadowNode::ListOfShared>());
+//    auto copiedOperationsQueue = std::move(operationsInBatch_);
+//    if (copiedOperationsQueue.empty()) {
 //        return;
 //    }
-//
-//    for (const auto &[shadowNode, props]: copiedOperationsQueue) {
-//        auto rawProps = new RawProps(rt, *props);
-//        auto clonedNode = uiManager_->cloneNode(*shadowNode, nullptr, rawProps);
-//        delete rawProps;
+//    operationsInBatch_ = std::vector<std::tuple<std::string &, uint32_t, std::unique_ptr<jsi::Value>>>();
+//    jsi::Runtime &rt = *runtimeManager_->runtime;
+//    auto batches = std::unordered_map<std::string, heron::DomBatchParsedParam*>();
+//    for (const auto &[pageId, tag, props]: copiedOperationsQueue) {
+//        auto update = new heron::UpdateElementParam();
+////        update->element = props->asObject(rt);
+//        if (batches[pageId] == nullptr) {
+//            batches[pageId] = new heron::DomBatchParsedParam();
+//        }
+//        batches[pageId]->batch.emplace_back(update);
 //    }
-//    if (copiedOperationsQueue.empty() || surfaceId_ < 0) {
-//        return;
+//    for (const auto &item: batches) {
+//        GetHeronSDKManager()->CallNativePageSync(item.first, item.second);
 //    }
-//    uiManager_->getDelegate()->uiManagerCompleteSurface(surfaceId_, std::make_shared<ShadowNode::ListOfShared>());
 }
 
 void NativeReanimatedModule::removeFromPropsRegistry(
@@ -515,34 +492,32 @@ void NativeReanimatedModule::dispatchCommand(
         const jsi::Value &commandNameValue,
         const jsi::Value &argsValue) {
     //Todo Caf3
+    auto obj = shadowNodeValue.asObject(rt);
+    auto pageId = obj.getProperty(rt, "pageId").asString(rt).utf8(rt);
+    auto viewTag = obj.getProperty(rt, "viewTag").asNumber();
+    auto method = commandNameValue.asString(rt).utf8(rt);
+    auto args = argsValue.asString(rt).utf8(rt);
+//    GetHeronSDKManager()->CallNativeComponent(pageId, std::to_string(viewTag), method, args, "");
 }
 
 jsi::Value NativeReanimatedModule::measure(
         jsi::Runtime &rt,
         const jsi::Value &shadowNodeValue) {
     //Todo Caf3
-//  auto shadowNode = shadowNodeFromValue(rt, shadowNodeValue);
-//  auto pageId = mApp->getPageId(shadowNode->getSurfaceId());
-//  auto page = heron::Engine::sharedInstance()->getPage(pageId);
-//  auto component = std::static_pointer_cast<heron::UIPage>(page)->getComponentByRef(std::to_string(shadowNode->getTag()));
-//  auto layout = component->getViewLayoutRect();
-//  auto size = component->getViewLayoutSize();
-//  auto origin = component->getViewLayoutRectAbsolute();
-//  jsi::Object result(rt);
-//  result.setProperty(
-//          rt, "x", jsi::Value(static_cast<double>(layout.left)));
-//  result.setProperty(
-//          rt, "y", jsi::Value(static_cast<double>(layout.top)));
-//  result.setProperty(
-//          rt, "width", jsi::Value(static_cast<double>(size.width)));
-//  result.setProperty(
-//          rt, "height", jsi::Value(static_cast<double>(size.height)));
-//  result.setProperty(
-//          rt, "pageX", jsi::Value(static_cast<double>(origin.left)));
-//  result.setProperty(
-//          rt, "pageY", jsi::Value(static_cast<double>(origin.top)));
-//  return result;
-
+    auto obj = shadowNodeValue.asObject(rt);
+    auto pageId = obj.getProperty(rt, "pageId").asString(rt).utf8(rt);
+    auto viewTag = obj.getProperty(rt, "viewTag").asNumber();
+//    auto rect = GetHeronSDKManager()->getComponent(pageId, viewTag);
+    jsi::Object result(rt);
+    result.setProperty(
+            rt, "x", 1);
+    result.setProperty(
+            rt, "y", 2);
+    result.setProperty(
+            rt, "width", 3);
+    result.setProperty(
+            rt, "height", 4);
+    return result;
 }
 
 void NativeReanimatedModule::setPropsRegistry(

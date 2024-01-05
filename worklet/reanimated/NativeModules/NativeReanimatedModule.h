@@ -152,7 +152,7 @@ private:
 
     SynchronouslyUpdateUIPropsFunction synchronouslyUpdateUIPropsFunction;
 
-    std::vector<std::pair<uint32_t, std::unique_ptr<jsi::Value>>>
+    std::vector<std::tuple<std::string&, uint32_t, std::unique_ptr<jsi::Value>>>
             operationsInBatch_;
 
     std::shared_ptr<PropsRegistry> propsRegistry_;
